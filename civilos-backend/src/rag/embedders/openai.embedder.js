@@ -1,0 +1,1 @@
+export { embedText, embedBatch } from "../../services/embedding.service.js";

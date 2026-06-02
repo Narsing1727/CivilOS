@@ -1,0 +1,1 @@
+export { excelParser as excelLoader } from "../../parsers/excel.parser.js";

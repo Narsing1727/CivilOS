@@ -1,0 +1,1 @@
+export { staadParser as staadLoader } from "../../parsers/staad.parser.js";

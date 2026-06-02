@@ -1,0 +1,20 @@
+export const IS456 = {
+  code: "IS 456:2000",
+  title: "Plain and Reinforced Concrete Code of Practice",
+  clauses: {
+    "26.5.1": { description: "Minimum tension reinforcement in beams", min_pt: 0.85 / 415 },
+    "26.5.1.1": { description: "Maximum tension reinforcement in beams", max_pt: 0.04 },
+    "26.5.2.1": { description: "Minimum reinforcement in slabs", min_pt: 0.12 },
+    "26.5.3.1": { description: "Longitudinal reinforcement in columns", min_p: 0.8, max_p: 6.0 },
+    "26.4.1": { description: "Nominal cover for slabs", min_cover_mm: 20 },
+    "26.4.2": { description: "Nominal cover for beams", min_cover_mm: 25 },
+    "26.4.3": { description: "Nominal cover for columns", min_cover_mm: 40 },
+    "40.2.1": { description: "Shear capacity of beams without shear reinforcement" },
+    "31.6": { description: "Punching shear in flat slabs and footings" },
+    "34.1": { description: "General requirements for footings" },
+    "34.2.3": { description: "Bending moment in footings" },
+    "39.3": { description: "Axial load capacity of short columns" },
+    "25.1.2": { description: "Slenderness limits for columns" },
+    "23.2.1": { description: "Span to effective depth ratio for slabs" },
+  },
+};

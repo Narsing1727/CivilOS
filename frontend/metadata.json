@@ -1,0 +1,6 @@
+{
+  "name": "CivilOS",
+  "description": "A project intelligence and infrastructure engineering copilot that provides compliance checking, document parsing, and natural language query reasoning for structural projects.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

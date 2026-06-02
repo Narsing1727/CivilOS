@@ -1,0 +1,1 @@
+export { drawingParser as imageLoader } from "../../parsers/drawing.parser.js";

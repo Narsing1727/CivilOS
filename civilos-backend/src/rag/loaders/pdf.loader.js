@@ -1,0 +1,1 @@
+export { pdfParser as pdfLoader } from "../../parsers/pdf.parser.js";
