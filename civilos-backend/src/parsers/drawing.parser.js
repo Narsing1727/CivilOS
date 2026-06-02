@@ -41,12 +41,30 @@ const convertPDFToImages = async (filePath) => {
   const baseName = path.basename(filePath, ".pdf");
   const images = [];
 
+  const possibleMagick = [
+    `"C:\\Program Files\\ImageMagick-7.1.2-Q16-HDRI\\magick.exe"`,
+    "magick",
+    "convert",
+  ];
+
+  let magickCmd = null;
+  for (const cmd of possibleMagick) {
+    try {
+      await execAsync(`${cmd} --version`);
+      magickCmd = cmd;
+      break;
+    } catch {}
+  }
+
+  if (!magickCmd) {
+    logger.warn("ImageMagick not found — drawing Vision AI unavailable on this environment");
+    return [];
+  }
+
   for (let i = 1; i <= 3; i++) {
     const outputPath = path.join(outputDir, `${baseName}_page${i}.jpg`).replace(/\\/g, "/");
     const inputPath = filePath.replace(/\\/g, "/");
-    
-const MAGICK = `"C:\\Program Files\\ImageMagick-7.1.2-Q16-HDRI\\magick.exe"`;
-const cmd = `${MAGICK} -density 150 "${inputPath}[${i - 1}]" -quality 75 -resize 1200x1600 "${outputPath}"`;
+    const cmd = `${magickCmd} -density 150 "${inputPath}[${i - 1}]" -quality 75 -resize 1200x1600 "${outputPath}"`;
 
     try {
       await execAsync(cmd);
@@ -103,11 +121,31 @@ export const drawingParser = async (filePath) => {
   const absolutePath = path.resolve(filePath).replace(/\\/g, "/");
   logger.info(`Drawing Intelligence starting for ${absolutePath}`);
 
-  const images = await convertPDFToImages(absolutePath);
+  let images = [];
+  try {
+    images = await convertPDFToImages(absolutePath);
+  } catch (err) {
+    logger.warn(`PDF to image conversion failed: ${err.message} — returning empty drawing result`);
+    return {
+      members: [],
+      project_info: {},
+      is_codes_referenced: [],
+      pages_processed: 0,
+      chunks: [],
+      raw_text: "",
+    };
+  }
 
   if (images.length === 0) {
-    logger.warn("No images generated from PDF");
-    return { members: [], project_info: {}, is_codes_referenced: [], pages_processed: 0 };
+    logger.warn("No images generated from PDF — ImageMagick unavailable or PDF has no pages");
+    return {
+      members: [],
+      project_info: {},
+      is_codes_referenced: [],
+      pages_processed: 0,
+      chunks: [],
+      raw_text: "",
+    };
   }
 
   logger.info(`Processing ${images.length} pages with Groq Vision`);
@@ -117,16 +155,17 @@ export const drawingParser = async (filePath) => {
   const isCodesReferenced = new Set();
 
   for (let i = 0; i < images.length; i++) {
-    const extracted = await extractMembersFromImage(images[i], i + 1);
-
-    if (extracted) {
-      if (extracted.members) allMembers.push(...extracted.members);
-      if (extracted.project_info && extracted.project_info.title) {
-        projectInfo = extracted.project_info;
+    try {
+      const extracted = await extractMembersFromImage(images[i], i + 1);
+      if (extracted) {
+        if (extracted.members) allMembers.push(...extracted.members);
+        if (extracted.project_info?.title) projectInfo = extracted.project_info;
+        if (extracted.is_codes_referenced) {
+          extracted.is_codes_referenced.forEach(c => isCodesReferenced.add(c));
+        }
       }
-      if (extracted.is_codes_referenced) {
-        extracted.is_codes_referenced.forEach(c => isCodesReferenced.add(c));
-      }
+    } catch (err) {
+      logger.warn(`Page ${i + 1} extraction failed: ${err.message}`);
     }
 
     try { fs.unlinkSync(images[i]); } catch {}
@@ -142,7 +181,7 @@ export const drawingParser = async (filePath) => {
     raw_text: allMembers.map(m => `${m.type} ${m.id} at ${m.grid_location}: ${JSON.stringify(m.dimensions)}`).join("\n"),
     chunks: allMembers.map((m, i) => ({
       text: `${m.type.toUpperCase()} ${m.id} | Location: ${m.grid_location} | Dimensions: ${JSON.stringify(m.dimensions)} | Material: ${m.material} | Notes: ${m.notes}`,
-      index: i
-    }))
+      index: i,
+    })),
   };
 };

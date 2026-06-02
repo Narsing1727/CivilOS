@@ -13,18 +13,35 @@ import routes from "./src/routes/index.js";
 import { errorHandler } from "./src/middleware/errorHandler.js";
 import { rateLimiter } from "./src/middleware/rateLimiter.js";
 import extractRoutes from "./src/routes/extract.routes.js";
+
 const app = express();
 const httpServer = createServer(app);
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  env.CLIENT_URL,
+].filter(Boolean);
+
 export const io = new SocketServer(httpServer, {
   cors: {
-    origin: env.CLIENT_URL,
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
 app.use(helmet());
-app.use(cors({ origin: env.CLIENT_URL, credentials: true }));
+app.use(cors({
+  origin: (origin, cb) =>
+    !origin || allowedOrigins.includes(origin)
+      ? cb(null, true)
+      : cb(new Error(`CORS blocked: ${origin}`)),
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
+app.options("*", cors());
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(morgan("dev"));
@@ -36,9 +53,7 @@ app.get("/health", (req, res) => {
   res.json({ status: "ok", service: "CivilOS API", version: "1.0.0" });
 });
 
-
 app.use("/api/v1/extract", extractRoutes);
-
 
 app.use(errorHandler);
 
