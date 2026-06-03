@@ -405,7 +405,7 @@ if (showLoader) {
     projectId={currentProject}
   />
 ) : activeTab === "materials-sandbox" ? (
-  <MaterialsSandbox
+  <MaterialSandbox
     onBack={() => setActiveTab("home")}
     userName={userProfile.name}
     projectId={currentProject}
