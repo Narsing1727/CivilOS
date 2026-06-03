@@ -24,7 +24,7 @@ export function HomeTab({ onSuggestTabChange, currentProject, projectId , userNa
 useEffect(() => {
   if (!projectId) return;
 
-  const socket = io("http://localhost:5000", {
+const socket = io(window.location.hostname === "localhost" ? "http://localhost:5000" : "https://civilos.onrender.com", {
     auth: { token: localStorage.getItem("civilos_token") },
   });
 
