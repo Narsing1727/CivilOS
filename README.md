@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="civilos-frontend/public/logo.png" alt="CivilOS" width="80"/>
+<img src="https://civil-os.vercel.app/logo.png" alt="CivilOS" width="80"/>
 
 # CivilOS
 
