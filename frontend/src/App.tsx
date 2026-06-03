@@ -28,7 +28,7 @@ import { ReasoningTab } from "./components/ReasoningTab";
 import { GhostFixTab } from "./components/GhostFixTab";
 import { LandingPage } from "./components/LandingPage";
 import { LoadCombinationWorkshop } from "./components/LoadCombinationWorkshop";
-import { MaterialsSandbox } from "./components/MaterialSandBox";
+import { MaterialSandbox } from "./components/MaterialSandBox";
 
 import { ISCodeComplianceCenter } from "./components/ISCodeComplianceCenter";
 import { LoadingScreen } from "./components/LoadingScreen";
