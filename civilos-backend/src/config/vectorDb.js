@@ -5,14 +5,14 @@ import { logger } from "./logger.js";
 const pool = new pg.Pool({
   host: env.DB_HOST,
   port: env.DB_PORT,
-    ssl: env.NODE_ENV === "production" ? {
-    require: true,
-    rejectUnauthorized: false,
-  } : false,
   database: env.DB_NAME,
   user: env.DB_USER,
   password: env.DB_PASSWORD,
   max: 10,
+  ssl: {
+    require: true,
+    rejectUnauthorized: false,
+  },
 });
 
 export const connectVectorDB = async () => {
