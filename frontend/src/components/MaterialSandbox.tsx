@@ -28,7 +28,7 @@ interface MaterialsSandboxProps {
   projectId?: string;
 }
 
-export function MaterialsSandbox({ onBack, userName = "Arjun R.", projectId = "NH-44 Bridge Design" }: MaterialsSandboxProps) {
+export function MaterialSandbox({ onBack, userName = "Arjun R.", projectId = "NH-44 Bridge Design" }: MaterialsSandboxProps) {
   // Materials selection
   const [concreteGrade, setConcreteGrade] = useState<number>(30); // MPa fck (20, 25, 30, 35, 40, 50, 60)
   const [steelGrade, setSteelGrade] = useState<number>(500); // MPa fy (250, 415, 500, 550, 600)
