@@ -22,5 +22,8 @@ export const getReport = async (projectId: string, reportId: string) => {
 };
 
 export const downloadReportUrl = (projectId: string, reportId: string) => {
-  return `http://localhost:5000/api/v1/projects/${projectId}/reports/${reportId}/download`;
+  const BASE = window.location.hostname === "localhost"
+    ? "http://localhost:5000"
+    : "https://civilos.onrender.com";
+  return `${BASE}/api/v1/projects/${projectId}/reports/${reportId}/download`;
 };
