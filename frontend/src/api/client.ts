@@ -1,6 +1,6 @@
 const BASE_URL = window.location.hostname === "localhost" 
-  ? "http://localhost:5000" 
-  : "https://civilos.onrender.com";
+  ? "http://localhost:5000/api/v1" 
+  : "https://civilos.onrender.com/api/v1";
 
 const getToken = () => localStorage.getItem("civilos_token");
 
